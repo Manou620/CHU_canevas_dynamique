@@ -16,10 +16,10 @@ import lombok.Setter;
 public class Entry extends Scan{
 
     @Column(name = "premier_entree")
-    private Boolean first_entry;
+    private Boolean first_entry = false;
 
     @Column(name = "entree_en_retard")
-    private Boolean is_late_entry;
+    private Boolean is_late = false;
 
     private Short type_horaire_attendu; //peut aussi determiner une premiere entree ou une entree tard
 

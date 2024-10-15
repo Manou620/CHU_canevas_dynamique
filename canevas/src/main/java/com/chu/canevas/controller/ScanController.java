@@ -1,8 +1,7 @@
 package com.chu.canevas.controller;
 
-import com.chu.canevas.dto.Scan.ScanId;
-import com.chu.canevas.repository.EntryRepository;
-import com.chu.canevas.repository.SortieRepository;
+import com.chu.canevas.dto.Scan.EntryDTO;
+import com.chu.canevas.dto.Scan.PersonnelToScan;
 import com.chu.canevas.service.ScanService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,15 @@ public class ScanController {
     @Autowired
     private ScanService scanService;
 
+//    @PostMapping("/entry")
+//    public ResponseEntity<EntryDTO> registerEntry(@RequestBody ScanId id, HttpServletRequest request){
+//        //return new ResponseEntity<>(request.getAttribute("utilisateur_id"), HttpStatus.OK);
+//        return new ResponseEntity<>(scanService.registerEntry(), HttpStatus.OK);
+//    }
     @PostMapping("/entry")
-    public ResponseEntity<?> registerEntry(@RequestBody ScanId id, HttpServletRequest request){
-        return new ResponseEntity<>(request.getAttribute("utilisateur_id"), HttpStatus.OK);
+    public ResponseEntity<EntryDTO> registerEntry(@RequestBody PersonnelToScan personnel, HttpServletRequest request){
+        //return new ResponseEntity<>(request.getAttribute("utilisateur_id"), HttpStatus.OK);
+        return new ResponseEntity<>(scanService.registerEntry(personnel.getImmatriculation(), (Long) request.getAttribute("utilisateur_id")), HttpStatus.OK); //Vo mila mijery exception
     }
 
 }

@@ -1,15 +1,15 @@
 package com.chu.canevas.service.implementation;
 
 import com.chu.canevas.dto.Scan.EntryDTO;
+import com.chu.canevas.dto.dtoMapper.EntryDtoMapper;
 import com.chu.canevas.exception.ElementNotFoundException;
-import com.chu.canevas.model.Entry;
-import com.chu.canevas.model.Scan;
-import com.chu.canevas.model.Sortie;
-import com.chu.canevas.repository.EntryRepository;
-import com.chu.canevas.repository.SortieRepository;
+import com.chu.canevas.model.*;
+import com.chu.canevas.repository.*;
 import com.chu.canevas.service.ScanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.*;
 
 @Service
 public class ScanServiceImpl  implements ScanService {
@@ -20,14 +20,26 @@ public class ScanServiceImpl  implements ScanService {
     @Autowired
     private SortieRepository sortieRepository;
 
+    @Autowired
+    private HoraireRepository horaireRepository;
+
+    @Autowired
+    private PersonnelRepository personnelRepository;
+
+    @Autowired
+    private PlanningRepository planningRepository;
+
+    @Autowired
+    private EntryDtoMapper entryDtoMapper;
+
     /**
      * @param personnel_IM
      * @return
      */
     @Override
-    public Scan getLastScanRegistered(String personnel_IM) {
-        Scan lastScan = entryRepository.findLastScanMade(personnel_IM);
-        if(entryRepository.findLastScanMade(personnel_IM) != null) {
+    public Scan getLastScanRegistered(Personnel personnel) {
+        Scan lastScan = entryRepository.findLastScanMade(personnel);
+        if(entryRepository.findLastScanMade(personnel) != null) {
             return lastScan;
         }else{
             return null;
@@ -35,20 +47,91 @@ public class ScanServiceImpl  implements ScanService {
         }
     }
 
-//    public EntryDTO registerEntry(String personnel_IM){
-//        //Mila horairen'ny employe
-//
-//        //Jerena reh first entree
-//        Scan lastscan = getLastScanRegistered(personnel_IM);
-//        if(lastscan instanceof Entry){
-//            System.out.println("entree");
-//            System.out.println((Entry) lastscan);
-//        } else if (lastscan instanceof Sortie || lastscan == null) {
-//            System.out.println("Sortie no farany tao");
-//            System.out.println((Sortie) lastscan);
-//
-//        } else {
-//            System.out.println("Sortie");
-//        }
-//    }
+    @Override
+    public EntryDTO registerEntry(String personnel_IM, Long user_id){
+
+            Instant scanMoment = Instant.now();
+            ZonedDateTime zonedDateTime = scanMoment.atZone(ZoneId.systemDefault());
+            LocalDate currentDate = zonedDateTime.toLocalDate();
+            LocalTime currentTime = zonedDateTime.toLocalTime();
+
+            //Verifiena hoe misy ve ny employee
+            Personnel personnel = personnelRepository.findById(personnel_IM).orElseThrow(
+                    () -> new ElementNotFoundException("Personnel", personnel_IM)
+            );
+
+            //Last entry
+            Scan lastscan = getLastScanRegistered(personnel);
+
+            //afaka atao anaty condition
+            Utilisateur user_scanneur = new Utilisateur();
+            user_scanneur.setId(user_id);
+
+            //#########Conge & autorisé à s'absenter sa tsia
+
+            // Mila horairen'ny employe
+            Horaire horaire = personnel.getHoraire();
+
+            /// ###### Hijerena ho is_Late sa tsia
+            //remontena ny planning sy horaire
+            Planning currentplanning = planningRepository.getCurrentPlanningOfAPersonnel(personnel_IM, LocalDate.now(), LocalTime.now());
+            //Jerena reh first entree
+            Boolean isFirstEntry = entryRepository.findEntryOfADateForAPersonnel(personnel_IM, LocalDate.now());
+
+
+            if(lastscan instanceof Entry){
+                System.out.println("entree");
+                System.out.println((Entry) lastscan);
+                return null;
+            } else if (lastscan instanceof Sortie || lastscan == null) {
+                try{
+
+                    Entry entry = new Entry();
+                    entry.setPersonnel(personnel);
+                    //entry.getDate_enregistrement();
+
+
+                    //Checking for Late or Not
+                    if(currentplanning != null){
+                        if(currentplanning.getDebut_heure().isBefore(currentTime) || currentplanning.getDebut_heure().equals(currentTime)){
+                            entry.setIs_late(true);
+                        }
+                    }else{
+                        if(!horaire.getFlexible() && (horaire.getDebut_horaire().isBefore(currentTime) || horaire.getDebut_horaire().equals(currentTime))){
+                            entry.setIs_late(true);
+                        }
+                    }
+
+                    //First Entry ou pas
+                    if (isFirstEntry){
+                        entry.setFirst_entry(true);
+                    }
+
+                    //Associer avec un utilisateur
+                    entry.setUtilisateur(user_scanneur);
+
+                    entry.setType_horaire_attendu(personnel.getHoraire().getId_horaire());
+
+                    entry.setAnswer_sortie(null);
+
+                    System.out.println("Sortie no farany tao");
+                    System.out.println((Sortie) lastscan);
+                    System.out.println("ENtree a enregistrer : ");
+                    System.out.println(entry);
+
+                    Entry savedEntry = entryRepository.save(entry);
+
+                    return entryDtoMapper.apply(savedEntry);
+
+                }catch (Exception e){
+                    System.out.println(e);
+                    throw new RuntimeException(e);
+                }
+
+
+            }
+
+            return null;
+
+    }
 }
