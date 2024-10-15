@@ -12,7 +12,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface ScanRepository extends CrudRepository<Scan, Long> {
 
-    @Query("SELECT s FROM Scan s WHERE s.personnel = :personnel ORDER BY s.date_enregistrement DESC")
-    Scan findLastScanMade(@Param("personnel") Personnel personnel);
+    @Query(value = "SELECT s FROM Scan s WHERE s.personnel = :personnel ORDER BY s.date_enregistrement DESC LIMIT 1")
+    Scan findTopByPersonnelOrderByDateEnregistrementDesc(@Param("personnel") Personnel personnel);
 
 }

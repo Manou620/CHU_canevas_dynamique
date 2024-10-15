@@ -18,6 +18,8 @@ public class Sortie extends Scan{
     @JoinColumn(name = "entry_associe")
     private Entry associated_entry;
 
+    Boolean isEarly;
+
 //    @OneToOne
 //    private Autorisation_sortie autorisationSortie;
 

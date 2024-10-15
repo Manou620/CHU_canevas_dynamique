@@ -17,4 +17,8 @@ public interface EntryRepository extends ScanRepository{
                 @Param("personnel_IM") String personnel_IM,
                 @Param("scanDate") LocalDate scanDate);
 
+    @Query("SELECT e FROM Entry e WHERE e.personnel.immatriculation = :personnel_IM ORDER BY e.date_enregistrement DESC LIMIT 1")
+    Entry findLastEntryOfAPersonnel(
+            @Param("personnel_IM") String pepersonnel_IM
+    );
 }

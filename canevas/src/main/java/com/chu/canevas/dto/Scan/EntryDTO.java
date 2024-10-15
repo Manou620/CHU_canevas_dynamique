@@ -6,6 +6,7 @@ import com.chu.canevas.dto.Utilisateur.UtilisateurInfoDTO;
 import java.time.Instant;
 
 public record EntryDTO (
+
     Long id,
     Instant moment_enregistrement,
     String observation,

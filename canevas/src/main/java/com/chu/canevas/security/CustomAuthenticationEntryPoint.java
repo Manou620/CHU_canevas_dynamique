@@ -64,7 +64,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 //            }
             case null, default -> {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("{\"error\": \"Unauthorized acces\", \"status\": 401}");
+                response.getWriter().write("{\"error\": \"Unauthorized accesssss\", \"status\": 401}");
             }
         }
     }

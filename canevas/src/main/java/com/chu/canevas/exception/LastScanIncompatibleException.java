@@ -3,10 +3,25 @@ package com.chu.canevas.exception;
 import com.chu.canevas.model.Entry;
 import com.chu.canevas.model.Scan;
 import com.chu.canevas.model.Sortie;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class LastScanIncompatibleException extends RuntimeException {
 
-    public LastScanIncompatibleException(Scan lastscan ){
+    private Scan LastScan;
+    private Scan registeredScan;
+
+    public LastScanIncompatibleException(Scan lastscan, Scan registeredScan ){
+        super (messageBuilderException(lastscan));
+        this.LastScan = lastscan;
+        this.registeredScan = registeredScan;
+    }
+    public LastScanIncompatibleException(Scan lastscan){
         super (messageBuilderException(lastscan));
     }
 

@@ -2,6 +2,7 @@ package com.chu.canevas.controller;
 
 import com.chu.canevas.dto.Scan.EntryDTO;
 import com.chu.canevas.dto.Scan.PersonnelToScan;
+import com.chu.canevas.dto.Scan.SortieDTO;
 import com.chu.canevas.service.ScanService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class ScanController {
     public ResponseEntity<EntryDTO> registerEntry(@RequestBody PersonnelToScan personnel, HttpServletRequest request){
         //return new ResponseEntity<>(request.getAttribute("utilisateur_id"), HttpStatus.OK);
         return new ResponseEntity<>(scanService.registerEntry(personnel.getImmatriculation(), (Long) request.getAttribute("utilisateur_id")), HttpStatus.OK); //Vo mila mijery exception
+    }
+
+    @PostMapping("/sortie")
+    public ResponseEntity<SortieDTO> registerSortie(@RequestBody PersonnelToScan personnel, HttpServletRequest request){
+        return null;
     }
 
 }
