@@ -33,7 +33,7 @@ public class ScanController {
 
     @PostMapping("/sortie")
     public ResponseEntity<SortieDTO> registerSortie(@RequestBody PersonnelToScan personnel, HttpServletRequest request){
-        return null;
+        return new ResponseEntity<>(scanService.registerSortie(personnel.getImmatriculation(), (Long) request.getAttribute("utilisateur_id")), HttpStatus.OK);
     }
 
 }

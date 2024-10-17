@@ -57,4 +57,15 @@ public class GlobalExceptionHandler {
 //        );
 //    }
 
+    @ExceptionHandler(NoCompatibleEntryRegisterdException.class)
+    public ResponseEntity<String> handleNoEntryRegisterdException(NoCompatibleEntryRegisterdException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    //######## Absence ##########
+    @ExceptionHandler(SamePersonAsInterimException.class)
+    public ResponseEntity<String> handleSamePersonAsInterimException(SamePersonAsInterimException e){
+        return  new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

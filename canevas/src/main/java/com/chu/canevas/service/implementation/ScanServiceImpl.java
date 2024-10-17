@@ -1,14 +1,19 @@
 package com.chu.canevas.service.implementation;
 
+import com.chu.canevas.config.PauseConfig;
 import com.chu.canevas.dto.Scan.EntryDTO;
 import com.chu.canevas.dto.Scan.SortieDTO;
 import com.chu.canevas.dto.dtoMapper.EntryDtoMapper;
+import com.chu.canevas.dto.dtoMapper.SortieDtoMapper;
+import com.chu.canevas.exception.ElementDuplicationException;
 import com.chu.canevas.exception.ElementNotFoundException;
 import com.chu.canevas.exception.LastScanIncompatibleException;
+import com.chu.canevas.exception.NoCompatibleEntryRegisterdException;
 import com.chu.canevas.model.*;
 import com.chu.canevas.repository.*;
 import com.chu.canevas.service.ScanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -34,6 +39,14 @@ public class ScanServiceImpl  implements ScanService {
     @Autowired
     private EntryDtoMapper entryDtoMapper;
 
+    @Autowired
+    private SortieDtoMapper sortieDtoMapper;
+
+//    @Autowired
+//    private PauseConfig pauseConfig;
+
+
+
     /**
      * @param personnel_IM
      * @return
@@ -56,6 +69,7 @@ public class ScanServiceImpl  implements ScanService {
             ZonedDateTime zonedDateTime = scanMoment.atZone(ZoneId.systemDefault());
             LocalDate currentDate = zonedDateTime.toLocalDate();
             LocalTime currentTime = zonedDateTime.toLocalTime();
+            LocalDateTime currentDateTime = zonedDateTime.toLocalDateTime();
 
             //Verifiena hoe misy ve ny employee
             Personnel personnel = personnelRepository.findById(personnel_IM).orElseThrow(
@@ -76,7 +90,7 @@ public class ScanServiceImpl  implements ScanService {
 
             /// ###### Hijerena ho is_Late sa tsia
             //remontena ny planning sy horaire
-            Planning currentplanning = planningRepository.getCurrentPlanningOfAPersonnel(personnel_IM, LocalDate.now(), LocalTime.now());
+            Planning currentplanning = planningRepository.getCurrentPlanningOfAPersonnel(personnel_IM, LocalDate.now(), LocalDateTime.now());
             //Jerena reh first entree
             Boolean isFirstEntry = entryRepository.findEntryOfADateForAPersonnel(personnel_IM, LocalDate.now());
 
@@ -85,14 +99,13 @@ public class ScanServiceImpl  implements ScanService {
             entry.setPersonnel(personnel);
             //entry.getDate_enregistrement();
 
-
             //Checking for Late or Not
             if(currentplanning != null){
-                if(currentplanning.getDebut_heure().isBefore(currentTime) || currentplanning.getDebut_heure().equals(currentTime)){
+                if(currentplanning.getDebut_heure().isBefore(currentDateTime) || currentplanning.getDebut_heure().equals(currentDateTime)){
                     entry.setIs_late(true);
                 }
             }else{
-                if(!horaire.getFlexible() && (horaire.getDebut_horaire().isBefore(currentTime) || horaire.getDebut_horaire().equals(currentTime))){
+                if(!horaire.getFlexible() && (horaire.getDebut_horaire().isBefore(currentTime) || horaire.getDebut_horaire().equals(currentDateTime))){
                     entry.setIs_late(true);
                 }
             }
@@ -134,6 +147,10 @@ public class ScanServiceImpl  implements ScanService {
         ZonedDateTime zonedDateTime = scanMoment.atZone(ZoneId.systemDefault());
         LocalDate currentDate = zonedDateTime.toLocalDate();
         LocalTime currentTime = zonedDateTime.toLocalTime();
+        LocalDateTime currentDateTime = zonedDateTime.toLocalDateTime();
+
+        LocalTime debut_pause = LocalTime.parse("12:00:00");
+        LocalTime fin_pause = LocalTime.parse("13:30:00");
 
         //Verifiena hoe misy ve ny employee
         Personnel personnel = personnelRepository.findById(personnel_IM).orElseThrow(
@@ -150,7 +167,57 @@ public class ScanServiceImpl  implements ScanService {
         //#########Conge & autorisé à s'absenter sa tsia
 
         // Mila horairen'ny employe ve?
-//        Horaire horaire = personnel.getHoraire();
-        return null;
+        Horaire horaire = personnel.getHoraire();
+
+        /// ###### Hijerena ho is_Late sa tsia
+
+        //remontena ny planning sy horaire
+        Planning currentplanning = planningRepository.getCurrentPlanningOfAPersonnel(personnel_IM, LocalDate.now(), LocalDateTime.now());
+        //Jerena reh first entree
+        Boolean isFirstEntry = entryRepository.findEntryOfADateForAPersonnel(personnel_IM, LocalDate.now());
+
+        //TAO ANATY TRY
+        Sortie sortie = new Sortie();
+        sortie.setPersonnel(personnel);
+        //entry.getDate_enregistrement();
+
+        if(currentplanning != null && (currentplanning.getFin_heure().isAfter(currentDateTime))){
+            sortie.setIsEarly(true);
+        }else if (!horaire.getFlexible() || horaire.getFin_horaire().isAfter(currentTime)) {
+            sortie.setIsEarly(true);
+        }else {
+            sortie.setIsEarly(false);
+        }
+
+        //Associer avec un utilisateur
+        sortie.setUtilisateur(user_scanneur);
+
+        //VERIFIER SI sortie pendant la pause
+        if((currentTime.isAfter(debut_pause) || currentTime.equals(debut_pause))
+            && (currentTime.isBefore(fin_pause) || currentTime.equals(fin_pause))) {
+            sortie.setPendant_pause(true);
+            //throw new RuntimeException("verifie ny condition");
+        }else {
+            sortie.setPendant_pause(false);
+            throw new RuntimeException("Tsa verifie ny condition");
+        }
+
+        Sortie savedSortie;
+
+        if(lastscan instanceof Entry){
+            sortie.setAssociated_entry((Entry) lastscan);
+            savedSortie = sortieRepository.save(sortie);
+        }else {
+            Entry associated_entry = entryRepository.findLastEntryOfAPersonnel(personnel_IM);
+            if(associated_entry != null && associated_entry.getAnswer_sortie() == null){
+                sortie.setAssociated_entry(associated_entry);
+                savedSortie = sortieRepository.save(sortie);
+                throw  new LastScanIncompatibleException(lastscan, savedSortie);
+            }else{
+                savedSortie = sortieRepository.save(sortie);
+                throw new NoCompatibleEntryRegisterdException("Aucune Entrée Compatible n'a été enregistré mais la sortie a ete enregistré |" + savedSortie.getId_scan().toString());
+            }
+        }
+        return sortieDtoMapper.apply(savedSortie);
     }
 }

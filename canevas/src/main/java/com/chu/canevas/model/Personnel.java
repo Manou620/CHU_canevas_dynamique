@@ -54,4 +54,10 @@ public class Personnel {
 //    @OneToMany(mappedBy = "personnel")
 //    private List<Autorisation_sortie> autorisationSortieList;
 
+    @OneToMany(mappedBy = "personnel")
+    private List<Absence> absenceList;
+
+    @OneToMany(mappedBy = "interim")
+    private List<Absence> interimList;
+
 }

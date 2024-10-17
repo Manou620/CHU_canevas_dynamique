@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -26,8 +27,8 @@ public class Planning { //Pour les horaires flexibles
 
     private final Instant date_definition_planning = Instant.now();
 
-    private LocalTime debut_heure;
-    private LocalTime fin_heure;
+    private LocalDateTime debut_heure;
+    private LocalDateTime fin_heure;
 
     @ManyToOne
     @JoinColumn(name = "personnel_IM")

@@ -7,9 +7,11 @@ import com.chu.canevas.dto.Scan.SortieDTO;
 import com.chu.canevas.dto.Service.ServiceDTO;
 import com.chu.canevas.dto.Utilisateur.UtilisateurInfoDTO;
 import com.chu.canevas.model.Sortie;
+import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+@Service
 public class SortieDtoMapper implements Function<Sortie, SortieDTO> {
 
     @Override
