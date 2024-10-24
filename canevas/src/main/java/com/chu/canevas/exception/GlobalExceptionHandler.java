@@ -68,4 +68,19 @@ public class GlobalExceptionHandler {
         return  new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InterimNotAvailableException.class)
+    public ResponseEntity<String> handleInterimNotAvailableException(InterimNotAvailableException e){
+        return  new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AbsenceSuperpositionException.class)
+    public ResponseEntity<String> handleAbsenceSuperpositionException(AbsenceSuperpositionException e){
+        return  new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LeaveBalanceException.class)
+    public ResponseEntity<String> handleLeaveBalanceException(LeaveBalanceException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

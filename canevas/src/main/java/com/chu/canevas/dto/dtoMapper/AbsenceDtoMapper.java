@@ -2,14 +2,14 @@ package com.chu.canevas.dto.dtoMapper;
 
 import com.chu.canevas.dto.Absence.AbsenceDTO;
 import com.chu.canevas.dto.Personnel.PersonnelDTO;
-import com.chu.canevas.dto.Scan.EntryDTO;
 import com.chu.canevas.dto.Service.ServiceDTO;
 import com.chu.canevas.dto.TypeAbsence.TypeAbsenceDto;
 import com.chu.canevas.model.Absence;
-import com.chu.canevas.model.Entry;
+import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+@Service
 public class AbsenceDtoMapper implements Function<Absence, AbsenceDTO> {
 
 
@@ -20,7 +20,8 @@ public class AbsenceDtoMapper implements Function<Absence, AbsenceDTO> {
         TypeAbsenceDto typeAbsenceDto = new TypeAbsenceDto(
             absence.getTypeAbsence().getId_type_absence(),
             absence.getTypeAbsence().getDuree_max_par_prise(),
-            absence.getTypeAbsence().getDuree_max_cumul(),
+            absence.getTypeAbsence().getDuree_max_cumul_autorise(),
+            absence.getTypeAbsence().getFrequence().toString(),
             absence.getTypeAbsence().getNomTypeConge()
         );
 

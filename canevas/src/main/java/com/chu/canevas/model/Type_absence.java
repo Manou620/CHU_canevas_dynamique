@@ -1,8 +1,10 @@
 package com.chu.canevas.model;
 
+import com.chu.canevas.enums.TypeAbsenceFrequencyEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 public class Type_absence {
 
     @Id
@@ -21,7 +24,8 @@ public class Type_absence {
 
     private Short duree_max_cumul_autorise;
 
-    private String frequence;
+    @Enumerated(EnumType.STRING)
+    private TypeAbsenceFrequencyEnum frequence;
 
     private String nomTypeConge;
 
