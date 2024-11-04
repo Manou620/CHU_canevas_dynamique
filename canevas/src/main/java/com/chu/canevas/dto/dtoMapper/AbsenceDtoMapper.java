@@ -34,7 +34,8 @@ public class AbsenceDtoMapper implements Function<Absence, AbsenceDTO> {
                     absence.getPersonnel().getService().getId(),
                     absence.getPersonnel().getService().getNomService(),
                     absence.getPersonnel().getService().getDescription()
-            )
+            ),
+            absence.getPersonnel().getSexe()
         );
 
         PersonnelDTO interim = new PersonnelDTO(
@@ -46,7 +47,8 @@ public class AbsenceDtoMapper implements Function<Absence, AbsenceDTO> {
                         absence.getInterim().getService().getId(),
                         absence.getInterim().getService().getNomService(),
                         absence.getInterim().getService().getDescription()
-                )
+                ),
+                absence.getInterim().getSexe()
         );
 
         return new AbsenceDTO(

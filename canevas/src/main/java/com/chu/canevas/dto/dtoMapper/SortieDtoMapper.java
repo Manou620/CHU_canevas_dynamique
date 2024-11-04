@@ -58,7 +58,8 @@ public class SortieDtoMapper implements Function<Sortie, SortieDTO> {
             sortie.getPersonnel().getNom(),
             sortie.getPersonnel().getFonction(),
             sortie.getPersonnel().getPhotoPath(),
-            serviceDTO
+            serviceDTO,
+            sortie.getPersonnel().getSexe()
         );
     }
 }

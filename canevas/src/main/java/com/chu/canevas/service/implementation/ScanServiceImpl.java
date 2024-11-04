@@ -1,9 +1,11 @@
 package com.chu.canevas.service.implementation;
 
 import com.chu.canevas.config.PauseConfig;
+import com.chu.canevas.dto.Personnel.PresentPersonnelDto;
 import com.chu.canevas.dto.Scan.EntryDTO;
 import com.chu.canevas.dto.Scan.SortieDTO;
 import com.chu.canevas.dto.dtoMapper.EntryDtoMapper;
+import com.chu.canevas.dto.dtoMapper.PresentPersonnelDtoMapper;
 import com.chu.canevas.dto.dtoMapper.SortieDtoMapper;
 import com.chu.canevas.exception.ElementDuplicationException;
 import com.chu.canevas.exception.ElementNotFoundException;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScanServiceImpl  implements ScanService {
@@ -41,6 +45,9 @@ public class ScanServiceImpl  implements ScanService {
 
     @Autowired
     private SortieDtoMapper sortieDtoMapper;
+
+    @Autowired
+    private PresentPersonnelDtoMapper presentPersonnelDtoMapper;
 
 //    @Autowired
 //    private PauseConfig pauseConfig;
@@ -219,5 +226,15 @@ public class ScanServiceImpl  implements ScanService {
             }
         }
         return sortieDtoMapper.apply(savedSortie);
+    }
+
+    @Override
+    public List<PresentPersonnelDto> getPresentPersonnel() {
+        List<Entry> entries = entryRepository.findLastEntriesWithoutCorrespondingSortie();
+        if(entries.isEmpty()){
+            throw new ElementNotFoundException("Aucune entree trouvee");
+        }
+        return entries.stream().map(presentPersonnelDtoMapper)
+                .collect(Collectors.toList());
     }
 }

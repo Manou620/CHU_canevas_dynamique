@@ -31,6 +31,10 @@ public class Service {
         this.description = serviceCreationDto.description();
     }
 
+    public Service(Short id){
+        this.id = id;
+    }
+
     @OneToMany(mappedBy = "service")
     private List<Personnel> personnelList;
 

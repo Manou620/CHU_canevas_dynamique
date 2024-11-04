@@ -16,6 +16,11 @@ import java.util.List;
 @Entity
 public class Horaire {
 
+    public  Horaire (Short id){
+        this.id_horaire = id;
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id_horaire;

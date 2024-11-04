@@ -25,7 +25,8 @@ public class PersonnelDtoMapper implements Function<Personnel, PersonnelDTO> {
                 personnel.getNom(),
                 personnel.getFonction(),
                 personnel.getPhotoPath(),
-                serviceDtoMapper.EntityToServiceDTO(personnel.getService())
+                serviceDtoMapper.EntityToServiceDTO(personnel.getService()),
+                personnel.getSexe()
                 //personnel.PersonnelDTO
         );
     }
@@ -36,7 +37,8 @@ public class PersonnelDtoMapper implements Function<Personnel, PersonnelDTO> {
                 personnel.getNom(),
                 personnel.getFonction(),
                 personnel.getPhotoPath(),
-                serviceDtoMapper.EntityToServiceDTO(personnel.getService())
+                serviceDtoMapper.EntityToServiceDTO(personnel.getService()),
+                personnel.getSexe()
         );
     }
 }

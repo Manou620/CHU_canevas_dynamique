@@ -1,6 +1,7 @@
 package com.chu.canevas.dto.Personnel;
 
 import com.chu.canevas.dto.Service.ServiceDTO;
+import com.chu.canevas.enums.Sexe;
 import com.chu.canevas.model.Service;
 import com.chu.canevas.model.Utilisateur;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ public record PersonnelDTO(
                 String nom,
                 String fonction,
                 String photoPath,
-                ServiceDTO service
+                ServiceDTO service,
+                Sexe sexe
 ) {
 }

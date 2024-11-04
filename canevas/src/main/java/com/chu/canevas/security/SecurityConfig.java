@@ -40,6 +40,8 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/service/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers("/ws/**").permitAll() //allow websocket connection
+                                .requestMatchers("/api/scan/socket-test").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());

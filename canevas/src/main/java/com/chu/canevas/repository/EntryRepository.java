@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface EntryRepository extends ScanRepository{
@@ -21,4 +22,9 @@ public interface EntryRepository extends ScanRepository{
     Entry findLastEntryOfAPersonnel(
             @Param("personnel_IM") String pepersonnel_IM
     );
+
+    @Query("SELECT e FROM Entry e JOIN FETCH e.personnel p " +
+            "WHERE e.answer_sortie IS NULL " +
+            "AND e.id_scan = ( SELECT MAX(e2.id_scan) FROM Entry e2 WHERE e2.personnel = e.personnel)")
+    List<Entry> findLastEntriesWithoutCorrespondingSortie();
 }

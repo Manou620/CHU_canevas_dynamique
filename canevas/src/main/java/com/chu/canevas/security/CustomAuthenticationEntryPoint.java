@@ -34,6 +34,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         Object exception = request.getAttribute("exception");
         log.error("Exception : {}", String.valueOf(exception));
+        System.out.print(exception);
         response.setContentType("application/json");
 
 //        if(authException instanceof JwtTokenExpiredException){
