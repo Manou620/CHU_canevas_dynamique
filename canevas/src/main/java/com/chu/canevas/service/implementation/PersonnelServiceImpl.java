@@ -70,7 +70,15 @@ public class PersonnelServiceImpl implements PersonnelService {
                 IM_nom_function, sexe, id_service
         );
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        Sort sort  = Sort.unsorted();
+
+        if(sortBy != null && !sortBy.isEmpty() && sortDirection != null && !sortDirection.isEmpty()){
+            sort = "DESC".equalsIgnoreCase(sortDirection)
+                    ? Sort.by(sortBy).descending()
+                    : Sort.by(sortBy).ascending();
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Personnel> personnels = personnelRepository.findAll(spec, pageable);
 

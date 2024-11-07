@@ -21,36 +21,22 @@ public class PersonnelSpecification {
                 Join<Personnel, Service> serviceJoin = root.join("service");
                 predicates.add(criteriaBuilder.equal(serviceJoin.get("id"), id_service));
             }
-            if(IM_nom_function != null && !IM_nom_function.isEmpty()) {
+            if(IM_nom_function != null && !IM_nom_function.trim().isEmpty()) {
                 predicatesOR.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("immatriculation")), "%" + IM_nom_function.toLowerCase() + "%"));
                 predicatesOR.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("nom")), "%" + IM_nom_function.toLowerCase() + "%"));
-                predicatesOR.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("function")), "%" + IM_nom_function.toLowerCase() + "%"));
+                predicatesOR.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("fonction")), "%" + IM_nom_function.toLowerCase() + "%"));
             }
-            if(sexe != null && !sexe.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("sexe")), sexe.toLowerCase()));
+            if(sexe != null && !sexe.trim().isEmpty()) {
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.upper(root.get("sexe")), sexe.toUpperCase()));
             }
 
             // Combine OR predicates
-            Predicate orPredicate = criteriaBuilder.or(predicatesOR.toArray(new Predicate[0]));
+            Predicate orPredicate = predicatesOR.isEmpty() ? criteriaBuilder.conjunction() : criteriaBuilder.or(predicatesOR.toArray(new Predicate[0]));
             // Combine AND predicates
-            Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            Predicate andPredicate = predicates.isEmpty() ? criteriaBuilder.conjunction() : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
-            /// Handle case where both lists are empty
-            if(orPredicate == null && andPredicate == null) {
-                // Option 1: Return all records (use criteriaBuilder.conjunction())
-                return criteriaBuilder.conjunction();
+            return criteriaBuilder.and(orPredicate, andPredicate);
 
-                // Option 2: Return no records (use criteriaBuilder.disjunction())
-                // return criteriaBuilder.disjunction();
-            }
-
-            if(orPredicate != null && andPredicate != null) {
-                return criteriaBuilder.and(orPredicate, andPredicate);
-            }else if (orPredicate != null) {
-                return orPredicate;
-            }else {
-                return andPredicate;
-            }
 
         };
     }

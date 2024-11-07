@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/personnel")
 @Validated
 public class PersonnelController {
@@ -47,7 +48,6 @@ public class PersonnelController {
         Page<PersonnelDTO> personnelDTOS = personnelService.getPersonnels(
                 IM_nom_function, id_service, sexe, page, size, sortBy, sortDirection
         );
-
         return new ResponseEntity<>(personnelDTOS, HttpStatus.OK);
     }
 

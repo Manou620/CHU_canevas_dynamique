@@ -38,6 +38,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(request);
         try {
+            System.out.println("do filter ***************************************************");
+            System.out.println(token);
+            System.out.println("do filter ***************************************************");
             if(token != null && jwtTokenProvider.validateToken(token)){
                 String username = jwtTokenProvider.getUsernameFromJwtToken(token);
                 System.out.println("Utilisateur from token : " + username);
@@ -54,8 +57,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        }catch (JwtTokenExpiredException | JwtTokenMalformedException | JwtTokenSignatureException e) {
+        //}catch (JwtTokenExpiredException | JwtTokenMalformedException | JwtTokenSignatureException e) {
+        }catch (RuntimeException e) {
             SecurityContextHolder.clearContext();
+            System.out.println(e.getMessage());
             request.setAttribute("exception", e); // Attach exception to the request
             throw new BadCredentialsException(e.getMessage(), e); // Rethrow the specific exception
         }
