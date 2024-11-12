@@ -24,7 +24,7 @@ public record PersonnelCreationDTO(
         @NotNull(message = "L'employe doit avoir un horaire")
         Short horaire_id,
 
-        @NotBlank(message = "Le genre de l'employe doit etre specifié")
+        @NotNull(message = "Le genre de l'employe doit etre specifié")
         Sexe sexe,
 
         @NotNull

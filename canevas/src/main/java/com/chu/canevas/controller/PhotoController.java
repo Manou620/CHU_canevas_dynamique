@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.NoSuchFileException;
+
 @RestController
 @RequestMapping("/api/photo")
 public class PhotoController {
@@ -20,6 +22,7 @@ public class PhotoController {
     @Autowired
     private PersonnelService personnelService;
 
+    @Autowired
     private PersonnelRepository personnelRepository;
 
     @Autowired
@@ -29,10 +32,11 @@ public class PhotoController {
     private PersonnelDtoMapper personnelDtoMapper;
 
     @PostMapping("/upload/{IM}")
-    public ResponseEntity<PersonnelDTO> uploadPersonnelPhoto(@PathVariable String IM, @RequestParam("file")MultipartFile file){
+    public ResponseEntity<PersonnelDTO> uploadPersonnelPhoto(@PathVariable String IM, @RequestParam("file") MultipartFile file){
         Personnel personnel = personnelRepository.findById(IM).orElseThrow(
                 () -> new ElementNotFoundException("Personnel", IM)
         );
+
         String filename = photoService.savePhoto(file, personnel.getImmatriculation());
         String photoUrl = "uploads/" + filename;
 

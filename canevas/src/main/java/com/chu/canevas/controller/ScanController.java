@@ -33,6 +33,7 @@ public class ScanController {
     @PostMapping("/entry")
     public ResponseEntity<EntryDTO> registerEntry(@RequestBody PersonnelToScan personnel, HttpServletRequest request){
         //return new ResponseEntity<>(request.getAttribute("utilisateur_id"), HttpStatus.OK);
+
         return new ResponseEntity<>(scanService.registerEntry(personnel.getImmatriculation(), (Long) request.getAttribute("utilisateur_id")), HttpStatus.OK); //Vo mila mijery exception
     }
 

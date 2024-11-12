@@ -56,7 +56,7 @@ public class PersonnelController {
         return new ResponseEntity<>(personnelService.updatePersonnel(IM, personnelCreationDTO), HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<PersonnelDTO> createPersonnel (@Validated @RequestBody PersonnelCreationDTO personnelCreationDTO) {
         return new ResponseEntity<>(personnelService.createPersonnel(personnelCreationDTO), HttpStatus.OK);
     }

@@ -60,7 +60,7 @@ public class Personnel {
     private Personnel superieur;
 
     @ManyToOne
-    @JoinColumn(name = "horaire_id")
+    @JoinColumn(name = "horaire_id", referencedColumnName = "id_horaire")
     private Horaire horaire;
 
     @OneToOne(mappedBy = "personnel") //non du attribut mais pas du colonne

@@ -6,7 +6,13 @@ import com.chu.canevas.dto.dtoMapper.ServiceDtoMapper;
 import com.chu.canevas.exception.ElementDuplicationException;
 import com.chu.canevas.repository.ServiceRepository;
 import com.chu.canevas.service.ServiceService;
+import com.chu.canevas.specification.ServiceSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +52,20 @@ public class ServiceServiceImpl implements ServiceService {
         com.chu.canevas.model.Service service = new com.chu.canevas.model.Service(serviceCreationDto);
         com.chu.canevas.model.Service savedService = serviceRepository.save(service);
         return serviceDtoMapper.EntityToServiceDTO(savedService);
+    }
+
+    @Override
+    public Page<ServiceDTO> getServices(String id_nom_desc, int page, int size, String sortBy, String sortDirection) {
+        Specification<com.chu.canevas.model.Service> spec = ServiceSpecification.createFullSpecification(id_nom_desc);
+        Sort sort = Sort.unsorted();
+        if(sortBy != null && !sortBy.isEmpty() && sortDirection != null && !sortDirection.isEmpty()){
+            sort = "DESC".equalsIgnoreCase(sortDirection)
+                    ? Sort.by(sortBy).descending()
+                    : Sort.by(sortBy).ascending();
+        }
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<com.chu.canevas.model.Service> servicePage = serviceRepository.findAll(spec, pageable);
+        return servicePage.map(serviceDtoMapper);
     }
 
 }

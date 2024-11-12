@@ -18,6 +18,7 @@ public class PresentPersonnelDtoMapper implements Function<Entry, PresentPersonn
                 personnel.getImmatriculation(),
                 personnel.getNom(),
                 personnel.getService().getNomService(),
+                personnel.getFonction(),
                 entry.getDate_enregistrement(),
                 entry.getFirst_entry(),
                 entry.getUtilisateur().getNom_utilisateur()

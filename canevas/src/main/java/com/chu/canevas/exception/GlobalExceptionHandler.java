@@ -83,4 +83,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    //Personnel creation
+    @ExceptionHandler(SamePersonAsChefException.class)
+    public ResponseEntity<String> handleSamePersonAsChefException(SamePersonAsChefException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> defaultExceptionHandler(RuntimeException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

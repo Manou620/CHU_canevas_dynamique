@@ -6,6 +6,7 @@ public record PresentPersonnelDto (
     String IM,
     String Nom,
     String NomService,
+    String fonction,
     Instant date_enregistrement,
     boolean isFisrtEntry,
     String nom_utilisateur

@@ -125,7 +125,7 @@ public class ScanServiceImpl  implements ScanService {
             //Associer avec un utilisateur
             entry.setUtilisateur(user_scanneur);
 
-            entry.setType_horaire_attendu(personnel.getHoraire().getId_horaire());
+            entry.setType_horaire_attendu(personnel.getHoraire().getId());
 
             entry.setAnswer_sortie(null);
 
@@ -142,6 +142,7 @@ public class ScanServiceImpl  implements ScanService {
                 throw new LastScanIncompatibleException(lastscan, savedEntry);
 //                throw new LastScanIncompatibleException(lastscan);
             }
+
             return entryDtoMapper.apply(savedEntry);
 
     }

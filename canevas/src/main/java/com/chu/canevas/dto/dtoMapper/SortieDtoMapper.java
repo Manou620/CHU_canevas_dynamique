@@ -20,7 +20,7 @@ public class SortieDtoMapper implements Function<Sortie, SortieDTO> {
         PersonnelDTO personnelDTO = getPersonnelDTO(sortie);
 
         HoraireLigthDTO horaireAttendu = new HoraireLigthDTO(
-            sortie.getPersonnel().getHoraire().getId_horaire(),
+            sortie.getPersonnel().getHoraire().getId(),
                 sortie.getPersonnel().getHoraire().getLibelle_horaire()
         );
 

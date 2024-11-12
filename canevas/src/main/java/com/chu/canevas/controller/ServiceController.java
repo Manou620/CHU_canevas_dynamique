@@ -5,6 +5,7 @@ import com.chu.canevas.dto.Service.ServiceDTO;
 import com.chu.canevas.service.ServiceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,20 @@ public class ServiceController {
     @PostMapping
     public ResponseEntity<ServiceDTO> registerService(@Valid @RequestBody ServiceCreationDto service){
         return new ResponseEntity<>(serviceService.createService(service), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/filtered")
+    public ResponseEntity<Page<ServiceDTO>> getServices (
+            @RequestParam(required = false) String id_nom_desc,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam (defaultValue = "ASC") String sortDirection,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        Page<ServiceDTO> serviceDTOS = serviceService.getServices(
+                id_nom_desc, page, size, sortBy, sortDirection
+        );
+        return new ResponseEntity<>(serviceDTOS, HttpStatus.OK);
     }
 
 }

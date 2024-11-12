@@ -5,8 +5,11 @@ import com.chu.canevas.dto.Personnel.PersonnelDTO;
 import com.chu.canevas.dto.dtoMapper.PersonnelDtoMapper;
 import com.chu.canevas.exception.ElementDuplicationException;
 import com.chu.canevas.exception.ElementNotFoundException;
+import com.chu.canevas.exception.SamePersonAsChefException;
 import com.chu.canevas.model.Personnel;
+import com.chu.canevas.repository.HoraireRepository;
 import com.chu.canevas.repository.PersonnelRepository;
+import com.chu.canevas.repository.ServiceRepository;
 import com.chu.canevas.service.PersonnelService;
 import com.chu.canevas.specification.PersonnelSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,12 @@ public class PersonnelServiceImpl implements PersonnelService {
     private PersonnelRepository personnelRepository;
 
     @Autowired
+    private HoraireRepository horaireRepository;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
+
+    @Autowired
     private PersonnelDtoMapper personnelDtoMapper;
 
     @Override
@@ -41,6 +50,18 @@ public class PersonnelServiceImpl implements PersonnelService {
     public PersonnelDTO createPersonnel(PersonnelCreationDTO personnelCreationDTO) {
         if(personnelRepository.existsById(personnelCreationDTO.IM())){
             throw new ElementDuplicationException("Ce personnel existe deja");
+        }
+        if(!personnelRepository.existsById(personnelCreationDTO.superieur_id())){
+            throw new ElementNotFoundException("Personnel", personnelCreationDTO.superieur_id());
+        }
+        if(!serviceRepository.existsById(personnelCreationDTO.service_id())){
+            throw new ElementNotFoundException("Ce service n'existe pas");
+        }
+        if(!horaireRepository.existsById(personnelCreationDTO.horaire_id())){
+            throw new ElementNotFoundException("L'horaire specifié n'existe pas");
+        }
+        if(personnelCreationDTO.IM().equals(personnelCreationDTO.superieur_id())){
+            throw new SamePersonAsChefException();
         }
         Personnel personnel = new Personnel(personnelCreationDTO);
         Personnel savedPersonnel = personnelRepository.save(personnel);
