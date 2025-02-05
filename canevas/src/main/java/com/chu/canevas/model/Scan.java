@@ -19,22 +19,18 @@ import java.time.Instant;
         discriminatorType = DiscriminatorType.STRING
 )
 public abstract class Scan {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_scan;
-
-    @Column(nullable = false,  updatable = false)
-    private final Instant date_enregistrement = Instant.now();
-
+    private Long idScan;
+    @Column(nullable = false, updatable = false)
+    private final Instant dateEnregistrement = Instant.now();
     private String observation;
-
     @ManyToOne
     @JoinColumn(name = "personnel_IM")
     private Personnel personnel;
-
     @ManyToOne
     @JoinColumn(name = "utilisateur_scanneur")
     private Utilisateur utilisateur;
 
+    private String heureAttendu = null;
 }

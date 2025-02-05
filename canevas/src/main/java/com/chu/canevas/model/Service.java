@@ -38,4 +38,7 @@ public class Service {
     @OneToMany(mappedBy = "service")
     private List<Personnel> personnelList;
 
+    @OneToMany(mappedBy = "service")
+    private List<Garde> gardeList;
+
 }

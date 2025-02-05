@@ -15,12 +15,8 @@ public class ServiceSpecification {
         return ((root, query, criteriaBuilder) -> {
            List<Predicate> predicates = new ArrayList<>();
             if(id_nom_desc != null && !id_nom_desc.trim().isEmpty()){
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("nomService")), '%' + id_nom_desc + "%"));
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), '%' + id_nom_desc + "%"));
-                try {
-                    predicates.add(criteriaBuilder.equal(root.get("id"), Short.parseShort(id_nom_desc)));
-                } catch (RuntimeException ignored) {
-                }
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("nomService")), '%' + id_nom_desc.toLowerCase() + "%"));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), '%' + id_nom_desc.toLowerCase() + "%"));
             }
            return predicates.isEmpty() ? criteriaBuilder.conjunction() : criteriaBuilder.or(predicates.toArray(new Predicate[0]));
         });

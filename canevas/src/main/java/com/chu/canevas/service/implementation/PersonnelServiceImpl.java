@@ -1,5 +1,6 @@
 package com.chu.canevas.service.implementation;
 
+import com.chu.canevas.dto.Personnel.HeavyPersonnelDto;
 import com.chu.canevas.dto.Personnel.PersonnelCreationDTO;
 import com.chu.canevas.dto.Personnel.PersonnelDTO;
 import com.chu.canevas.dto.dtoMapper.PersonnelDtoMapper;
@@ -43,8 +44,17 @@ public class PersonnelServiceImpl implements PersonnelService {
         Personnel personnel = personnelRepository.findById(IM).orElseThrow(
                 () -> new ElementNotFoundException("Personnel", IM)
         );
-        return personnelDtoMapper.EntityToDTO(personnel);
+        return personnelDtoMapper.apply(personnel);
     }
+
+    @Override
+    public HeavyPersonnelDto getHeavyPersonnelDetails(String IM) {
+        Personnel personnel = personnelRepository.findById(IM).orElseThrow(
+                () -> new ElementNotFoundException("Personnel", IM)
+        );
+        return personnelDtoMapper.entityToHeavyPersonnelDTO(personnel);
+    }
+
 
     @Override
     public PersonnelDTO createPersonnel(PersonnelCreationDTO personnelCreationDTO) {
@@ -69,12 +79,12 @@ public class PersonnelServiceImpl implements PersonnelService {
     }
 
     @Override
-    public PersonnelDTO updatePersonnel(String IM, PersonnelCreationDTO personnelCreationDTO) {
+    public HeavyPersonnelDto updatePersonnel(String IM, PersonnelCreationDTO personnelCreationDTO) {
         Optional<Personnel> optionalPersonnel = personnelRepository.findById(IM);
         if (optionalPersonnel.isPresent()) {
             Personnel personnelTosave = new Personnel(personnelCreationDTO);
             Personnel savedPersonnel = personnelRepository.save(personnelTosave);
-            return personnelDtoMapper.apply(savedPersonnel);
+            return personnelDtoMapper.entityToHeavyPersonnelDTO(savedPersonnel);
         }else {
             throw new ElementNotFoundException("Personnel", IM);
         }

@@ -1,8 +1,10 @@
 package com.chu.canevas.dto.dtoMapper;
 
 import com.chu.canevas.dto.Horaire.HoraireLigthDTO;
+import com.chu.canevas.dto.Personnel.PersonnelLiteDto;
 import com.chu.canevas.dto.Scan.EntryDTO;
 import com.chu.canevas.dto.Scan.SortieLightDTO;
+import com.chu.canevas.dto.Service.ServiceDTO;
 import com.chu.canevas.dto.Utilisateur.UtilisateurInfoDTO;
 import com.chu.canevas.model.Entry;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,8 @@ public class EntryDtoMapper implements Function<Entry, EntryDTO> {
         );
 
         SortieLightDTO sortieLightDTO = new SortieLightDTO(
-                (entry.getAnswer_sortie() != null) ? entry.getAnswer_sortie().getId_scan() : null,
-                (entry.getAnswer_sortie() != null) ? entry.getAnswer_sortie().getDate_enregistrement() : null
+                (entry.getAnswer_sortie() != null) ? entry.getAnswer_sortie().getIdScan() : null,
+                (entry.getAnswer_sortie() != null) ? entry.getAnswer_sortie().getDateEnregistrement() : null
         );
 
         UtilisateurInfoDTO utilisateurInfoDTO = new UtilisateurInfoDTO(
@@ -33,15 +35,33 @@ public class EntryDtoMapper implements Function<Entry, EntryDTO> {
                 entry.getUtilisateur().getNom_utilisateur()
         );
 
+        PersonnelLiteDto personnelLiteDto = getPersonnelLiteDto(entry);
+
         return new EntryDTO(
-                entry.getId_scan(),
-                entry.getDate_enregistrement(),
+                entry.getIdScan(),
+                entry.getDateEnregistrement(),
                 entry.getObservation(),
                 entry.getFirst_entry(),
                 entry.getIs_late(),
                 horaireLigthDTO,
                 sortieLightDTO,
-                utilisateurInfoDTO
+                utilisateurInfoDTO,
+                personnelLiteDto
+        );
+    }
+
+    private static PersonnelLiteDto getPersonnelLiteDto(Entry entry) {
+        ServiceDTO persServiceDTO = new ServiceDTO(
+                entry.getPersonnel().getService().getId(),
+                entry.getPersonnel().getService().getNomService(),
+                entry.getPersonnel().getService().getDescription()
+        );
+
+        return new PersonnelLiteDto(
+                entry.getPersonnel().getImmatriculation(),
+                entry.getPersonnel().getNom(),
+                persServiceDTO,
+                entry.getPersonnel().getFonction()
         );
     }
 }

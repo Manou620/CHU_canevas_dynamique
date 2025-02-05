@@ -37,7 +37,7 @@ public class LastScanIncompatibleException extends RuntimeException {
                     + "La sortie sera enregistré mais confirmez l'entrée correspondante au precedente sortie "
                     + "aupres du responsable ";
         }else {
-            return "L'enregistrement du scam a échoué";
+            return "L'enregistrement du scan a échoué";
         }
     }
 

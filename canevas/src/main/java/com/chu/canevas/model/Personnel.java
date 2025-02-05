@@ -19,6 +19,7 @@ public class Personnel {
         this.nom = personnel.getNom();
         this.immatriculation = personnel.getImmatriculation();
         this.service = personnel.getService();
+        this.fonction = personnel.getFonction();
     }
 
     public Personnel (String IM) {
@@ -55,7 +56,7 @@ public class Personnel {
     @JoinColumn(name = "service_id")
     private Service service;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.REMOVE)
     @JoinColumn(name = "superieur_im")
     private Personnel superieur;
 
@@ -69,7 +70,7 @@ public class Personnel {
     @OneToMany(mappedBy = "superieur")
     private List<Personnel> subordonee;
 
-    @OneToMany(mappedBy = "personnel")
+    @OneToMany(mappedBy = "personnel", cascade = CascadeType.REMOVE)
     private List<Scan> scan;
 
 //    @OneToMany(mappedBy = "personnel")
@@ -82,10 +83,13 @@ public class Personnel {
 //    @OneToMany(mappedBy = "personnel")
 //    private List<Autorisation_sortie> autorisationSortieList;
 
-    @OneToMany(mappedBy = "personnel")
+    @OneToMany(mappedBy = "personnel", cascade = CascadeType.REMOVE)
     private List<Absence> absenceList;
 
-    @OneToMany(mappedBy = "interim")
+    @OneToMany(mappedBy = "interim", cascade = CascadeType.REMOVE)
     private List<Absence> interimList;
+
+    @OneToMany(mappedBy = "personnel")
+    private List<Garde> gardeList;
 
 }

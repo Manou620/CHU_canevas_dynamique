@@ -1,6 +1,7 @@
 package com.chu.canevas.controller;
 
 import com.chu.canevas.dto.Personnel.PresentPersonnelDto;
+import com.chu.canevas.dto.RealTimeData.EntryExit;
 import com.chu.canevas.service.ScanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,6 +29,12 @@ public class WebSocketController {
     public void getEmployeePresentList() {
         List<PresentPersonnelDto> presentPersonnel = scanService.getPresentPersonnel();
         messagingTemplate.convertAndSend("/topic/present-list", presentPersonnel);
+    }
+
+    @MessageMapping("/entry-exit-data")
+    public void getEntryExitData() {
+        EntryExit entryExit = scanService.getCountedEntryExitOfToday();
+        messagingTemplate.convertAndSend("/topic/entry-exit-data", entryExit);
     }
 
 }

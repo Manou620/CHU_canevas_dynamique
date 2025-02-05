@@ -20,7 +20,4 @@ public class Sortie extends Scan{
 
     private Boolean isEarly;
 
-//    @OneToOne
-//    private Autorisation_sortie autorisationSortie;
-
 }

@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 //                e.getRegisteredScan().getId_scan(), e.getRegisteredScan().getDate_enregistrement()
 //        );
         return new ResponseEntity<>(
-                new IncompatibleScanResponse(e.getMessage(), e.getLastScan().getId_scan(), e.getLastScan().getDate_enregistrement()),
+                new IncompatibleScanResponse(e.getMessage(), e.getLastScan().getIdScan(), e.getLastScan().getDateEnregistrement()),
                 HttpStatus.EXPECTATION_FAILED
         );
     }

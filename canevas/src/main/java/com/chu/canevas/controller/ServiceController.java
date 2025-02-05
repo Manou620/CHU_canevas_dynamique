@@ -36,6 +36,17 @@ public class ServiceController {
         return new ResponseEntity<>(serviceService.createService(service), HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ServiceDTO> updateService(@Valid @RequestBody ServiceCreationDto serviceCreationDto, @PathVariable Short id){
+        return new ResponseEntity<>(serviceService.updateService(serviceCreationDto, id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteService(@PathVariable Short id){
+        serviceService.deleteOneService(id);
+        return new ResponseEntity<>("Suppression de service réussi", HttpStatus.OK);
+    }
+
     @GetMapping("/filtered")
     public ResponseEntity<Page<ServiceDTO>> getServices (
             @RequestParam(required = false) String id_nom_desc,
@@ -49,5 +60,7 @@ public class ServiceController {
         );
         return new ResponseEntity<>(serviceDTOS, HttpStatus.OK);
     }
+
+
 
 }

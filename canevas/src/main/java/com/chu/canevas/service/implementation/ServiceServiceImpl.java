@@ -4,6 +4,7 @@ import com.chu.canevas.dto.Service.ServiceCreationDto;
 import com.chu.canevas.dto.Service.ServiceDTO;
 import com.chu.canevas.dto.dtoMapper.ServiceDtoMapper;
 import com.chu.canevas.exception.ElementDuplicationException;
+import com.chu.canevas.exception.ElementNotFoundException;
 import com.chu.canevas.repository.ServiceRepository;
 import com.chu.canevas.service.ServiceService;
 import com.chu.canevas.specification.ServiceSpecification;
@@ -55,6 +56,17 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
+    public ServiceDTO updateService(ServiceCreationDto serviceCreationDto, Short id) {
+        com.chu.canevas.model.Service service = serviceRepository.findById(id).orElseThrow(
+                () -> new ElementNotFoundException("Service", id.toString())
+        );
+        service.setNomService(serviceCreationDto.nom_service());
+        service.setDescription(serviceCreationDto.description());
+        com.chu.canevas.model.Service savedService = serviceRepository.save(service);
+        return new ServiceDTO(savedService.getId(), savedService.getNomService(), savedService.getDescription());
+    }
+
+    @Override
     public Page<ServiceDTO> getServices(String id_nom_desc, int page, int size, String sortBy, String sortDirection) {
         Specification<com.chu.canevas.model.Service> spec = ServiceSpecification.createFullSpecification(id_nom_desc);
         Sort sort = Sort.unsorted();
@@ -66,6 +78,11 @@ public class ServiceServiceImpl implements ServiceService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<com.chu.canevas.model.Service> servicePage = serviceRepository.findAll(spec, pageable);
         return servicePage.map(serviceDtoMapper);
+    }
+
+    @Override
+    public void deleteOneService(Short id) {
+        serviceRepository.deleteById(id);
     }
 
 }

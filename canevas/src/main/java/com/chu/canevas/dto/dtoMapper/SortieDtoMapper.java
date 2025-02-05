@@ -29,14 +29,19 @@ public class SortieDtoMapper implements Function<Sortie, SortieDTO> {
                 sortie.getUtilisateur().getNom_utilisateur()
         );
 
-        EntryLiteDTO associatedEntry = new EntryLiteDTO(
-          sortie.getAssociated_entry().getId_scan(),
-          sortie.getAssociated_entry().getDate_enregistrement()
-        );
+        EntryLiteDTO associatedEntry = new EntryLiteDTO();
+        if(sortie.getAssociated_entry() != null){
+            associatedEntry.setId(sortie.getAssociated_entry().getIdScan());
+            associatedEntry.setDate_enregistrement(sortie.getAssociated_entry().getDateEnregistrement());
+        }
+//        EntryLiteDTO associatedEntry = new EntryLiteDTO(
+//          sortie.getAssociated_entry().getId_scan(),
+//          sortie.getAssociated_entry().getDate_enregistrement()
+//        );
 
         return new SortieDTO(
-                sortie.getId_scan(),
-                sortie.getDate_enregistrement(),
+                sortie.getIdScan(),
+                sortie.getDateEnregistrement(),
                 sortie.getObservation(),
                 sortie.getIsEarly(),
                 personnelDTO,

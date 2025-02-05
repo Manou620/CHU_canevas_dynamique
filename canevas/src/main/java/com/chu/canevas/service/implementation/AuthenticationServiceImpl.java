@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Map<String, Object> authenticateUser(LoginRequest loginRequest) {
 
-        System.out.println("password de l'user : " + loginRequest.getPassword());
+//        System.out.println("password de l'user : " + loginRequest.getPassword());
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -41,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
 //        System.out.println("password de l'user : " + loginRequest.getPassword());
-//
+
         // Set authentication in the security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

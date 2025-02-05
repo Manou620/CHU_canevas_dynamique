@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -48,10 +50,11 @@ public class SecurityConfig {
                                 //.requestMatchers("/api/service/**").hasAuthority("ROLE_ADMIN")
                                 .requestMatchers("/ws/**").permitAll() //allow websocket connection
                                 .requestMatchers("/api/scan/socket-test").permitAll()
-                                .requestMatchers("/api/personnel/**").permitAll()
+                                .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());
+
         return httpSecurity.build();
     }
 
@@ -76,7 +79,8 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+//        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         corsConfiguration.setExposedHeaders(List.of("Authorization"));

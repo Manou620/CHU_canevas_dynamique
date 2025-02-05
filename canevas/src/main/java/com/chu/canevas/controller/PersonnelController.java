@@ -1,5 +1,6 @@
 package com.chu.canevas.controller;
 
+import com.chu.canevas.dto.Personnel.HeavyPersonnelDto;
 import com.chu.canevas.dto.Personnel.PersonnelCreationDTO;
 import com.chu.canevas.dto.Personnel.PersonnelDTO;
 import com.chu.canevas.model.Personnel;
@@ -28,10 +29,15 @@ public class PersonnelController {
         return new ResponseEntity<PersonnelDTO>(personnelService.getPersonnelById(im), HttpStatus.OK);
     }
 
+    @GetMapping("/heavy/{im}")
+    public ResponseEntity<HeavyPersonnelDto> getHeavyPersonnelDataByIM(@PathVariable String im){
+        return new ResponseEntity<HeavyPersonnelDto>(personnelService.getHeavyPersonnelDetails(im), HttpStatus.OK);
+    }
+
     @DeleteMapping("/multiple-delete")
-    public  ResponseEntity<String> deleteMultiplePersonnel(@RequestBody List<String> IMs){
-        System.out.println(IMs);
-        personnelService.deletePersonnelsByIMs(IMs);
+    public  ResponseEntity<String> deleteMultiplePersonnel(@RequestBody List<String> ims){
+        System.out.println(ims);
+        personnelService.deletePersonnelsByIMs(ims);
         return new ResponseEntity<>("Suppression reussi", HttpStatus.OK);
     }
 
@@ -52,7 +58,7 @@ public class PersonnelController {
     }
 
     @PutMapping("/{IM}")
-    public ResponseEntity<PersonnelDTO> updatePersonnel (@PathVariable String IM, @Validated @RequestBody PersonnelCreationDTO personnelCreationDTO) {
+    public ResponseEntity<HeavyPersonnelDto> updatePersonnel (@PathVariable String IM, @Validated @RequestBody PersonnelCreationDTO personnelCreationDTO) {
         return new ResponseEntity<>(personnelService.updatePersonnel(IM, personnelCreationDTO), HttpStatus.OK);
     }
 

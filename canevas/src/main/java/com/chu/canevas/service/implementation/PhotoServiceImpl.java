@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,11 +33,27 @@ public class PhotoServiceImpl implements PhotoService {
             }
 
             String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
             if(!employee_IM.trim().isEmpty()){
                 filename += "_" + employee_IM;
             }
-            Path path = Paths.get(uploadDir + filename);
-            Files.copy(file.getInputStream(), path);
+
+//            Path path = Paths.get(uploadDir + filename);
+//            Files.copy(file.getInputStream(), path);
+
+            Path filepath = uploadPath.resolve(filename);
+
+            try(
+                    InputStream inputStream = file.getInputStream();
+                    OutputStream outputStream = Files.newOutputStream(filepath)
+                    ) {
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1){
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+
             return filename;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -43,8 +62,13 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public void deletePhoto(String filename) throws IOException {
+    public String deletePhoto(String filename){
         Path path = Paths.get(uploadDir + filename);
-        Files.deleteIfExists(path);
+        try {
+            Files.deleteIfExists(path);
+            return "Photo supprimé";
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur de suppression de fichier");
+        }
     }
 }

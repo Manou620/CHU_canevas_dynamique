@@ -1,5 +1,6 @@
 package com.chu.canevas.service;
 
+import com.chu.canevas.dto.Personnel.HeavyPersonnelDto;
 import com.chu.canevas.dto.Personnel.PersonnelCreationDTO;
 import com.chu.canevas.dto.Personnel.PersonnelDTO;
 import org.springframework.data.domain.Page;
@@ -10,9 +11,10 @@ import java.util.Optional;
 public interface PersonnelService {
     PersonnelDTO getPersonnelById(String IM);
 
-    PersonnelDTO createPersonnel(PersonnelCreationDTO personnelCreationDTO);
+    HeavyPersonnelDto getHeavyPersonnelDetails(String IM);
 
-    PersonnelDTO updatePersonnel(String IM, PersonnelCreationDTO personnelCreationDTO);
+    PersonnelDTO createPersonnel(PersonnelCreationDTO personnelCreationDTO);
+    HeavyPersonnelDto updatePersonnel(String IM, PersonnelCreationDTO personnelCreationDTO);
 
     void deletePersonnelsByIMs(List<String> IMs);
 

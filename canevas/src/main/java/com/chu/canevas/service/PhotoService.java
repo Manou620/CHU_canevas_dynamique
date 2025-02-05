@@ -8,6 +8,6 @@ public interface PhotoService {
 
     String savePhoto(MultipartFile file, String employee_IM);
 
-    void deletePhoto(String filename) throws IOException;
+    String deletePhoto(String filename) ;
 
 }
